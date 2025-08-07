@@ -1,5 +1,6 @@
 
 // 📁 lib/entity_generator.dart
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -8,14 +9,14 @@ import 'package:entity_generator/annotations.dart';
 class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
   @override
   String generateForAnnotatedElement(
-    Element element,
+      Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    if (element is! ClassElement) return '';
+    if (element is! ClassElement2) return '';
 
-    final className = element.name;
-    final entityName = className.replaceAll('Model', 'Entity');
+    final className = element.name3;
+    final entityName = className?.replaceAll('Model', 'Entity');
     final style = annotation.peek('style')?.stringValue ?? 'equatable';
     final buffer = StringBuffer();
 
@@ -30,7 +31,7 @@ class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
         buffer.writeln('@freezed');
         buffer.writeln('class $entityName with _\$$entityName {');
 
-        for (final field in element.fields.where((f) => !f.isStatic)) {
+        for (final field in element.fields2.where((f) => !f.isStatic)) {
           final type = field.type.getDisplayString(withNullability: true);
 
           final docComment = field.documentationComment
@@ -40,18 +41,18 @@ class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
             buffer.writeln('  /// $docComment');
           }
 
-          buffer.writeln('  $type ${field.name};');
+          buffer.writeln('  $type ${field.name3};');
         }
 
         buffer.writeln();
         buffer.writeln('  $entityName({');
-        for (final field in element.fields.where((f) => !f.isStatic)) {
+        for (final field in element.fields2.where((f) => !f.isStatic)) {
           final type = field.type.getDisplayString(withNullability: true);
           final isNullable = type.endsWith('?');
           if (isNullable) {
-            buffer.writeln('    this.${field.name},');
+            buffer.writeln('    this.${field.name3},');
           } else {
-            buffer.writeln(' required  this.${field.name},');
+            buffer.writeln(' required  this.${field.name3},');
           }
         }
         buffer.writeln('  });');
@@ -68,19 +69,19 @@ class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
         buffer.writeln('@CopyWith()');
         buffer.writeln('class $entityName extends Equatable {');
 
-        for (final field in element.fields.where((f) => !f.isStatic)) {
+        for (final field in element.fields2.where((f) => !f.isStatic)) {
           final type = field.type.getDisplayString(withNullability: true);
-          buffer.writeln('  final $type ${field.name};');
+          buffer.writeln('  final $type ${field.name3};');
         }
 
         buffer.writeln('\n  const $entityName({');
-        for (final field in element.fields.where((f) => !f.isStatic)) {
+        for (final field in element.fields2.where((f) => !f.isStatic)) {
           final type = field.type.getDisplayString(withNullability: true);
           final isNullable = type.endsWith('?');
           if (isNullable) {
-            buffer.writeln('    this.${field.name},');
+            buffer.writeln('    this.${field.name3},');
           } else {
-            buffer.writeln('    required this.${field.name},');
+            buffer.writeln('    required this.${field.name3},');
           }
         }
         buffer.writeln('  });\n');
@@ -88,14 +89,14 @@ class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
         // props
         buffer.writeln('  @override');
         buffer.writeln('  List<Object?> get props => [');
-        for (final field in element.fields.where((f) => !f.isStatic)) {
-          buffer.writeln('    ${field.name},');
+        for (final field in element.fields2.where((f) => !f.isStatic)) {
+          buffer.writeln('    ${field.name3},');
         }
         buffer.writeln('  ];');
 
         buffer.writeln('\n  ${className} toModel() => $className(');
-        for (final field in element.fields.where((f) => !f.isStatic)) {
-          buffer.writeln('    ${field.name}: ${field.name},');
+        for (final field in element.fields2.where((f) => !f.isStatic)) {
+          buffer.writeln('    ${field.name3}: ${field.name3},');
         }
         buffer.writeln('  );');
 
