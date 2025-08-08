@@ -5,11 +5,15 @@ targets:
         generate_for:
           - package:entity_generator/**
 
+
 builders:
   entityBuilder:
     import: "package:entity_generator/builder.dart"
     builder_factories: ["entityBuilder"]
-    build_extensions: {".dart": [".entity.dart"]}
+    build_extensions: {".dart": [".entity_generator.dart"]}
+    runs_before:
+      - freezed
+      - json_serializable
     auto_apply: dependents
     build_to: source
 

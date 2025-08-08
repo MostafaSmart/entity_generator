@@ -3,7 +3,6 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:entity_generator/annotations.dart';
 
 class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
@@ -23,9 +22,7 @@ class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
     switch (style) {
       case 'freezed':
         buffer.writeln("import 'package:freezed_annotation/freezed_annotation.dart';");
-
-        final entityFileName = buildStep.inputId.uri.pathSegments.last
-            .replaceFirst('_model.dart', '_entity.freezed.dart');
+        final entityFileName = buildStep.inputId.uri.pathSegments.last.replaceAll('.dart', '.entity.freezed.dart');
         buffer.writeln("part '$entityFileName';");
 
         buffer.writeln('@freezed');
@@ -66,6 +63,8 @@ class EntityGenerator extends GeneratorForAnnotation<GenerateEntity> {
         buffer.writeln("import 'package:equatable/equatable.dart';");
         buffer.writeln("import 'package:copy_with_extension/copy_with_extension.dart';");
         buffer.writeln('');
+        final entityFileName = buildStep.inputId.uri.pathSegments.last.replaceAll('.dart', '.entity.g.dart');
+        buffer.writeln("part '$entityFileName';");
         buffer.writeln('@CopyWith()');
         buffer.writeln('class $entityName extends Equatable {');
 
